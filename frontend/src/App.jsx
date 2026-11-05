@@ -5,7 +5,7 @@ import { StudentForm } from './components/StudentForm';
 import { SearchFilter } from './components/SearchFilter';
 import { StudentList } from './components/StudentList';
 import { useStudents } from './hooks/useStudents';
-import { Info, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 export default function App() {
   const {
@@ -24,55 +24,45 @@ export default function App() {
   // Filter States
   const [searchQuery, setSearchQuery] = useState('');
   const [courseFilter, setCourseFilter] = useState('All Courses');
-  const [statusFilter, setStatusFilter] = useState('All Statuses');
 
   // Filter Logic
   const filteredStudents = useMemo(() => {
     return students.filter((student) => {
-      // Search text match
       const query = searchQuery.trim().toLowerCase();
+      const fname = (student.firstname || student.firstName || '').toLowerCase();
+      const lname = (student.lastname || student.lastName || '').toLowerCase();
+      const course = (student.course || '').toLowerCase();
+      const section = (student.section || '').toLowerCase();
+      const id = String(student.id || '');
+
       const matchesSearch =
         !query ||
-        student.studentId?.toLowerCase().includes(query) ||
-        student.firstName?.toLowerCase().includes(query) ||
-        student.lastName?.toLowerCase().includes(query) ||
-        student.email?.toLowerCase().includes(query);
+        id.includes(query) ||
+        fname.includes(query) ||
+        lname.includes(query) ||
+        `${fname} ${lname}`.includes(query) ||
+        course.includes(query) ||
+        section.includes(query);
 
-      // Course match
       const matchesCourse =
-        courseFilter === 'All Courses' || student.course === courseFilter;
+        courseFilter === 'All Courses' ||
+        (student.course || '').toUpperCase() === courseFilter.toUpperCase();
 
-      // Status match
-      const matchesStatus =
-        statusFilter === 'All Statuses' || student.status === statusFilter;
-
-      return matchesSearch && matchesCourse && matchesStatus;
+      return matchesSearch && matchesCourse;
     });
-  }, [students, searchQuery, courseFilter, statusFilter]);
+  }, [students, searchQuery, courseFilter]);
 
   const handleClearFilters = () => {
     setSearchQuery('');
     setCourseFilter('All Courses');
-    setStatusFilter('All Statuses');
   };
 
-  const activeCount = useMemo(() => {
-    return students.filter((s) => s.status === 'Active').length;
-  }, [students]);
-
-  const isFiltered =
-    Boolean(searchQuery.trim()) ||
-    courseFilter !== 'All Courses' ||
-    statusFilter !== 'All Statuses';
+  const isFiltered = Boolean(searchQuery.trim()) || courseFilter !== 'All Courses';
 
   return (
     <div className="min-h-screen bg-slate-100/70 flex flex-col">
       {/* Top Navigation */}
-      <Navbar
-        totalCount={students.length}
-        activeCount={activeCount}
-        onRefresh={fetchStudents}
-      />
+      <Navbar totalCount={students.length} onRefresh={fetchStudents} />
 
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
@@ -98,13 +88,13 @@ export default function App() {
               </div>
               <ul className="space-y-1.5 text-slate-500 list-disc list-inside">
                 <li>
-                  Click <strong className="text-slate-700">Edit</strong> on any row to immediately populate and update the record right in the form above.
+                  Click <strong className="text-slate-700">Edit</strong> on any row to immediately populate and edit the student in the form.
                 </li>
                 <li>
-                  Click <strong className="text-slate-700">Delete</strong> to safely confirm deletion inline directly within the table row.
+                  Click <strong className="text-slate-700">Delete</strong> for an inline confirmation directly in the row—no popup modals.
                 </li>
                 <li>
-                  Full REST API support with fallback to local persistent mock storage.
+                  Connected to Spring Boot REST API (`/zablan/students`) &amp; Render PostgreSQL.
                 </li>
               </ul>
             </div>
@@ -117,8 +107,6 @@ export default function App() {
               onSearchChange={setSearchQuery}
               courseFilter={courseFilter}
               onCourseChange={setCourseFilter}
-              statusFilter={statusFilter}
-              onStatusChange={setStatusFilter}
               onClearFilters={handleClearFilters}
               totalCount={students.length}
               filteredCount={filteredStudents.length}
@@ -139,7 +127,7 @@ export default function App() {
 
       {/* Footer */}
       <footer className="mt-auto py-4 border-t border-slate-200 bg-white text-center text-xs text-slate-500">
-        Student Management System &bull; Built with Vite, React &amp; Tailwind CSS
+        Student Management System &bull; Built with Vite, React &amp; Spring Boot
       </footer>
     </div>
   );

@@ -20,19 +20,16 @@ export function StudentList({
           <thead>
             <tr className="bg-slate-50/80 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
               <th scope="col" className="px-4 py-3.5">
-                Student ID
+                ID
               </th>
               <th scope="col" className="px-4 py-3.5">
-                Student Name
+                Full Name
               </th>
               <th scope="col" className="px-4 py-3.5">
-                Course Program
+                Course
               </th>
               <th scope="col" className="px-4 py-3.5">
-                Year Level
-              </th>
-              <th scope="col" className="px-4 py-3.5">
-                Status
+                Section
               </th>
               <th scope="col" className="px-4 py-3.5 text-right">
                 Actions
@@ -56,7 +53,7 @@ export function StudentList({
             ) : (
               // Empty State
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center">
+                <td colSpan={5} className="px-6 py-12 text-center">
                   <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
                     <div className="p-3 bg-slate-100 rounded-full text-slate-400 mb-3">
                       {isFiltered ? (
@@ -76,7 +73,7 @@ export function StudentList({
                     {isFiltered && (
                       <button
                         onClick={onClearFilters}
-                        className="px-3.5 py-1.5 text-xs font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition"
+                        className="px-3.5 py-1.5 text-xs font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition cursor-pointer"
                       >
                         Reset All Filters
                       </button>

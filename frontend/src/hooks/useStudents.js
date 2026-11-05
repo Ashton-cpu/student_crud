@@ -39,7 +39,9 @@ export function useStudents() {
   // Set student to edit (loads data into in-page form)
   const selectForEdit = useCallback((student) => {
     setEditingStudent(student);
-    showAlert('info', `Editing record for ${student.firstName} ${student.lastName} (${student.studentId}).`);
+    const fname = student.firstname || student.firstName || '';
+    const lname = student.lastname || student.lastName || '';
+    showAlert('info', `Editing record for ${fname} ${lname} (ID: ${student.id}).`);
     // Smooth scroll to form on mobile/small screens
     const formElement = document.getElementById('student-form-card');
     if (formElement) {
@@ -66,12 +68,16 @@ export function useStudents() {
             prev.map((s) => (String(s.id) === String(editingStudent.id) ? updated : s))
           );
           setEditingStudent(null);
-          showAlert('success', `Student "${updated.firstName} ${updated.lastName}" updated successfully!`);
+          const fname = updated.firstname || updated.firstName || '';
+          const lname = updated.lastname || updated.lastName || '';
+          showAlert('success', `Student "${fname} ${lname}" updated successfully!`);
         } else {
           // Create
           const created = await studentService.create(formData);
           setStudents((prev) => [created, ...prev]);
-          showAlert('success', `Student "${created.firstName} ${created.lastName}" added successfully!`);
+          const fname = created.firstname || created.firstName || '';
+          const lname = created.lastname || created.lastName || '';
+          showAlert('success', `Student "${fname} ${lname}" added successfully!`);
         }
         return true;
       } catch (err) {

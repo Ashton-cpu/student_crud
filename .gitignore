@@ -1,6 +1,11 @@
 node_modules
+frontend/node_modules
+frontend/dist
 dist
-dist-ssr
+.vite
+frontend/.vite
+student/target
+.idea
 *.local
 .env
 .env.production

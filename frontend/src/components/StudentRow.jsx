@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
-import { Pencil, Trash2, Check, X, ShieldAlert, Mail } from 'lucide-react';
+import { Pencil, Trash2, Check, X, ShieldAlert, GraduationCap } from 'lucide-react';
 
 export function StudentRow({ student, isEditing, onEdit, onDelete, isDeleting }) {
   // Inline confirmation state for this specific row (Zero Modals!)
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
+  const firstname = student.firstname || student.firstName || '';
+  const lastname = student.lastname || student.lastName || '';
+  const fullName = `${firstname} ${lastname}`.trim() || `Student #${student.id}`;
+
   const handleDeleteConfirm = () => {
-    onDelete(student.id, `${student.firstName} ${student.lastName}`);
+    onDelete(student.id, fullName);
     setShowConfirmDelete(false);
   };
-
-  const statusStyles = {
-    Active: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    Inactive: 'bg-amber-50 text-amber-700 border-amber-200',
-    Graduated: 'bg-purple-50 text-purple-700 border-purple-200',
-  }[student.status] || 'bg-slate-50 text-slate-700 border-slate-200';
 
   return (
     <tr
@@ -32,47 +30,42 @@ export function StudentRow({ student, isEditing, onEdit, onDelete, isDeleting })
           {isEditing && (
             <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-pulse" />
           )}
-          <span className="font-mono text-xs font-semibold text-slate-900 bg-slate-100 px-2 py-1 rounded-md border border-slate-200">
-            {student.studentId}
+          <span className="font-mono text-xs font-semibold text-slate-800 bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200">
+            #{student.id}
           </span>
         </div>
       </td>
 
-      {/* Full Name & Email */}
-      <td className="px-4 py-3.5">
-        <div className="flex flex-col">
-          <span className="text-sm font-semibold text-slate-900">
-            {student.firstName} {student.lastName}
-          </span>
-          <span className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
-            <Mail className="w-3 h-3 text-slate-400" />
-            {student.email}
-          </span>
-        </div>
-      </td>
-
-      {/* Course Program */}
-      <td className="px-4 py-3.5 whitespace-nowrap text-xs text-slate-700 font-medium">
-        {student.course}
-      </td>
-
-      {/* Year Level */}
-      <td className="px-4 py-3.5 whitespace-nowrap text-xs text-slate-600">
-        <span className="bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-full border border-slate-200 font-medium">
-          {student.yearLevel}
-        </span>
-      </td>
-
-      {/* Status Badge */}
+      {/* Full Name */}
       <td className="px-4 py-3.5 whitespace-nowrap">
-        <span
-          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${statusStyles}`}
-        >
-          {student.status}
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center shrink-0">
+            {firstname ? firstname.charAt(0).toUpperCase() : 'S'}
+          </div>
+          <div>
+            <span className="text-sm font-semibold text-slate-900">
+              {fullName}
+            </span>
+          </div>
+        </div>
+      </td>
+
+      {/* Course */}
+      <td className="px-4 py-3.5 whitespace-nowrap text-xs">
+        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-medium bg-indigo-50 text-indigo-700 border border-indigo-200">
+          <GraduationCap className="w-3 h-3" />
+          {student.course}
         </span>
       </td>
 
-      {/* Actions Cell (Inline Controls - Absolutely NO Modal) */}
+      {/* Section */}
+      <td className="px-4 py-3.5 whitespace-nowrap text-xs">
+        <span className="bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-md border border-slate-200 font-semibold">
+          {student.section}
+        </span>
+      </td>
+
+      {/* Actions Cell (Inline Controls - Zero Modal) */}
       <td className="px-4 py-3.5 whitespace-nowrap text-right">
         {showConfirmDelete ? (
           // Inline Delete Confirmation Bar directly inside the cell
